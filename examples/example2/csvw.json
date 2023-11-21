@@ -1,0 +1,77 @@
+{
+    "@context": [
+      "http://www.w3.org/ns/csvw",
+      {"@language": "en"}
+    ],
+    "url": "transactions.csv",
+    "dc:title": "Financial Transactions",
+    "dc:description": "A log of financial transactions carried out between CompanyA and CompanyB in 2023.",
+    "dc:publisher": {
+        "schema:name": "FinCorp Ltd.",
+        "schema:url": {"@id": "http://fincorpltd.example.com" }
+    },
+    "dcat:keyword": ["transactions", "financial"],
+    "dc:license": {"@id": "http://opendefinition.org/licenses/cc-by/"},
+    "dc:modified": {"@value": "2023-10-25", "@type": "xsd:date"},
+    "tableSchema": {
+      "columns": [
+        {
+          "name": "transaction_id",
+          "titles": {
+            "fr": "ID de Transaction",
+            "en": "Transaction ID"
+          },
+          "datatype": "integer",
+          "required": true
+        },
+        {
+          "name": "date",
+          "titles": {
+            "fr": "Date",
+            "en": "Date"
+          },
+          "datatype": {
+            "base": "date",
+            "minInclusive": "2023-01-01",
+            "maxInclusive": "2023-12-31"
+          },
+          "required": true
+        },
+        {
+          "name": "payer",
+          "titles": {
+             "fr": "Payeur",
+             "en": "Payer"
+          },
+          "datatype": "string",
+          "required": true
+        },
+        {
+          "name": "payee",
+          "titles": {
+            "fr": "Bénéficiaire",
+            "en": "Payee"
+          },
+          "datatype": "string",
+          "required": true
+        },
+        {
+          "name": "description",
+          "titles": "Description",
+          "datatype": "string",
+          "required": true
+        },
+        {
+          "name": "amount",
+          "titles": {
+            "fr": "Montant (USD)",
+            "en": "Amount (USD)"
+          },
+          "datatype": "decimal",
+          "required": true
+        }
+      ],
+      "primaryKey": "transaction_id",
+      "aboutUrl": "http://example.com/transactions/{transaction_id}"
+    }
+  }

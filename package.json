@@ -1,0 +1,26 @@
+{
+  "name": "csv-to-jsonld",
+  "version": "1.0.0",
+  "description": "A Node.js script to convert CSV data to JSON-LD format based on CSVW metadata.",
+  "main": "convert.js",
+  "scripts": {
+    "start": "node convert.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/theodi/csv-to-jsonld.git"
+  },
+  "keywords": [
+    "csv",
+    "json-ld",
+    "csvw",
+    "data-conversion",
+    "nodejs"
+  ],
+  "author": "David Tarrant <davetaz@theodi.org>",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^0.27.2",
+    "csv-parser": "^3.0.0"
+  }
+}

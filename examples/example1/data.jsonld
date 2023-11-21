@@ -1,0 +1,64 @@
+{
+  "@context": [
+    "http://www.w3.org/ns/csvw",
+    {
+      "@language": "en"
+    }
+  ],
+  "@graph": [
+    {
+      "transaction_id": {
+        "@value": 1,
+        "@type": "xsd:integer"
+      },
+      "date": {
+        "@value": "2023-01-15",
+        "@type": "xsd:date"
+      },
+      "payer": "CompanyA",
+      "payee": "CompanyB",
+      "description": "Payment for services",
+      "amount": {
+        "@value": 5000,
+        "@type": "xsd:decimal"
+      },
+      "@id": "http://example.com/transactions/1"
+    },
+    {
+      "transaction_id": {
+        "@value": 2,
+        "@type": "xsd:integer"
+      },
+      "date": {
+        "@value": "2023-01-20",
+        "@type": "xsd:date"
+      },
+      "payer": "CompanyB",
+      "payee": "CompanyA",
+      "description": "Refund for overpayment",
+      "amount": {
+        "@value": 250,
+        "@type": "xsd:decimal"
+      },
+      "@id": "http://example.com/transactions/2"
+    },
+    {
+      "transaction_id": {
+        "@value": 3,
+        "@type": "xsd:integer"
+      },
+      "date": {
+        "@value": "2023-02-01",
+        "@type": "xsd:date"
+      },
+      "payer": "CompanyA",
+      "payee": "CompanyB",
+      "description": "Monthly subscription fee",
+      "amount": {
+        "@value": 1000,
+        "@type": "xsd:decimal"
+      },
+      "@id": "http://example.com/transactions/3"
+    }
+  ]
+}

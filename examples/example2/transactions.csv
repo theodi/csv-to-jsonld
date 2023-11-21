@@ -1,0 +1,4 @@
+Transaction ID,Date,Payer,Payee,Description,Amount (USD)
+1,2023-01-15,CompanyA,CompanyB,Payment for services,5000
+2,2023-01-20,CompanyB,CompanyA,Refund for overpayment,250
+3,2023-02-01,CompanyA,CompanyB,Monthly subscription fee,1000

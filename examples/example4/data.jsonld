@@ -1,0 +1,167 @@
+{
+  "@context": [
+    "http://www.w3.org/ns/csvw",
+    {
+      "@language": "en",
+      "@base": "http://example.com/",
+      "pay": "http://reference.data.gov.uk/def/payment#"
+    }
+  ],
+  "@graph": [
+    {
+      "schema:identifier": {
+        "@value": 1,
+        "@type": "xsd:integer"
+      },
+      "schema:date": {
+        "@value": "2023-01-15",
+        "@type": "xsd:date"
+      },
+      "pay:payer": {
+        "@id": "company/CompanyA"
+      },
+      "pay:payee": {
+        "@id": "company/CompanyB"
+      },
+      "schema:description": "Payment for services",
+      "@id": "transactions/1",
+      "schema:amount": {
+        "@id": "transactions/1#amount",
+        "rdf:type": "schema:MonetaryAmount",
+        "schema:value": "5000",
+        "schema:currency": "USD"
+      },
+      "rdf:type": "pay:Payment"
+    },
+    {
+      "schema:identifier": {
+        "@value": 2,
+        "@type": "xsd:integer"
+      },
+      "schema:date": {
+        "@value": "2023-01-20",
+        "@type": "xsd:date"
+      },
+      "pay:payer": {
+        "@id": "company/CompanyB"
+      },
+      "pay:payee": {
+        "@id": "company/CompanyA"
+      },
+      "schema:description": "Refund for overpayment",
+      "@id": "transactions/2",
+      "schema:amount": {
+        "@id": "transactions/2#amount",
+        "rdf:type": "schema:MonetaryAmount",
+        "schema:value": "250",
+        "schema:currency": "USD"
+      },
+      "rdf:type": "pay:Payment"
+    },
+    {
+      "schema:identifier": {
+        "@value": 3,
+        "@type": "xsd:integer"
+      },
+      "schema:date": {
+        "@value": "2023-02-01",
+        "@type": "xsd:date"
+      },
+      "pay:payer": {
+        "@id": "company/CompanyA"
+      },
+      "pay:payee": {
+        "@id": "company/CompanyB"
+      },
+      "schema:description": "Monthly subscription fee",
+      "@id": "transactions/3",
+      "schema:amount": {
+        "@id": "transactions/3#amount",
+        "rdf:type": "schema:MonetaryAmount",
+        "schema:value": "1000",
+        "schema:currency": "USD"
+      },
+      "rdf:type": "pay:Payment"
+    }
+  ],
+  "dc:title": "Financial Transactions",
+  "dc:description": "A log of financial transactions carried out between CompanyA and CompanyB in 2023.",
+  "dc:publisher": {
+    "schema:name": "FinCorp Ltd.",
+    "schema:url": {
+      "@id": "http://fincorpltd.example.com"
+    }
+  },
+  "dcat:keyword": [
+    "transactions",
+    "financial"
+  ],
+  "dc:license": {
+    "@id": "http://opendefinition.org/licenses/cc-by/"
+  },
+  "dc:modified": {
+    "@value": "2023-10-25",
+    "@type": "xsd:date"
+  },
+  "schema:identifier": {
+    "@id": "schema:identifier",
+    "rdfs:label": [
+      {
+        "@value": "ID de Transaction",
+        "@language": "fr"
+      },
+      {
+        "@value": "Transaction ID",
+        "@language": "en"
+      }
+    ]
+  },
+  "schema:date": {
+    "@id": "schema:date",
+    "rdfs:label": [
+      {
+        "@value": "Date",
+        "@language": "fr"
+      },
+      {
+        "@value": "Date",
+        "@language": "en"
+      }
+    ]
+  },
+  "pay:payer": {
+    "@id": "pay:payer",
+    "rdfs:label": [
+      {
+        "@value": "Payeur",
+        "@language": "fr"
+      },
+      {
+        "@value": "Payer",
+        "@language": "en"
+      }
+    ]
+  },
+  "pay:payee": {
+    "@id": "pay:payee",
+    "rdfs:label": [
+      {
+        "@value": "Bénéficiaire",
+        "@language": "fr"
+      },
+      {
+        "@value": "Payee",
+        "@language": "en"
+      }
+    ]
+  },
+  "schema:description": {
+    "@id": "schema:description",
+    "rdfs:label": [
+      {
+        "@value": "Description",
+        "@language": "en"
+      }
+    ]
+  }
+}
