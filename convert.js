@@ -3,6 +3,7 @@ const csv = require('csv-parser');
 const path = require('path');
 const axios = require('axios');
 const url = require('url');
+const { Cipher } = require('crypto');
 
 if (process.argv.length <= 2) {
   console.error('Usage: node convert.js <metadata JSON file path>');
@@ -21,6 +22,9 @@ const dataSource = metadata.url;
 
 const tableSchema = metadata.tableSchema;
 
+const globalAboutUrl = tableSchema.aboutUrl;
+
+let labelData = [];
 // Build a lookup table for column titles to internal names
 const columns = {};
 tableSchema.columns.forEach(column => {
@@ -45,10 +49,12 @@ tableSchema.columns.forEach(column => {
       }));
     }
     if (labels.length > 0) {
-      metadata[column.propertyUrl] = {
+      const object = {};
+      object[column.propertyUrl] = {
         '@id': column.propertyUrl,
         'rdfs:label': labels
       };
+      labelData.push(object);
     }
   }
 });
@@ -72,6 +78,9 @@ if (url.parse(dataSource).protocol) {
         })
         .on('end', () => {
           // Output the results
+          for(const label of labelData) {
+            results.push(label);
+          }
           const output = {
             "@context": metadata["@context"],
             "@graph": results
@@ -123,9 +132,23 @@ function convertType(value, type) {
   }
 }
 
-// Function to resolve valueUrl templates
 function processValueUrl(valueUrl, row) {
-  return valueUrl.replace(/{(.+?)}/g, (_, key) => row[key]);
+  const placeholderCount = (valueUrl.match(/{(.+?)}/g) || []).length;
+  if (placeholderCount == 0) {
+    return valueUrl;
+  }
+  let replacement = "";
+  const result = valueUrl.replace(/{(.+?)}/g, (_, key) => {
+    replacement = row[key];
+    return replacement;
+  });
+
+  if (replacement == "") {
+    return replacement;
+  } else {
+    return result;
+  }
+  //return valueUrl.replace(/{(.+?)}/g, (_, key) => row[key]);
 }
 
 // Function to convert a CSV value based on its datatype
@@ -143,6 +166,36 @@ function convertType(value, datatype) {
     }
   }
   return value; // return as is if no datatype provided or not a recognized type
+}
+
+function updateNodeById(obj, aboutUrl, property, value) {
+  if (obj["@id"] === aboutUrl) {
+      // Found the node, add the property
+      if (value.indexOf("/") > 0) {
+        if (!obj[property]) {
+          obj[property] = {};
+        }
+        obj[property]["@id"] = value;
+      } else {
+        obj[property] = value;
+      }
+      return true;
+  }
+
+  // If the current object is an object or array, recurse into it
+  if (typeof obj === 'object' && obj !== null) {
+      for (let key in obj) {
+          if (obj.hasOwnProperty(key)) {
+              let updated = updateNodeById(obj[key], aboutUrl, property, value);
+              if (updated) {
+                  return true;
+              }
+          }
+      }
+  }
+
+  // Return false if the node wasn't found or updated
+  return false;
 }
 
 // Function to convert a CSV row to a JSON-LD object
@@ -167,7 +220,9 @@ function convertRowToJSONLD(row) {
       let objectValue;
       if (columnDefinition.valueUrl) {
         const resolvedValueUrl = processValueUrl(columnDefinition.valueUrl, internalRow);
-        objectValue = { "@id": resolvedValueUrl };
+        if (resolvedValueUrl !== "") {
+          objectValue = { "@id": resolvedValueUrl };
+        }
       } else {
         objectValue = convertType(value, datatype);
       }
@@ -179,15 +234,19 @@ function convertRowToJSONLD(row) {
 
   // Add type information if it exists
   if (tableSchema.aboutUrl) {
-    result["@id"] = processValueUrl(tableSchema.aboutUrl, internalRow);
+    const processedValue = processValueUrl(tableSchema.aboutUrl, internalRow);
+    if (processedValue !== "") {
+      result["@id"] = processedValue;
+    }
   }
 
   // Add virtual columns
   tableSchema.columns.filter(col => col.virtual).forEach(virtualColumn => {
     if (!virtualColumn.aboutUrl) {
       let valueUrl = processValueUrl(virtualColumn.valueUrl,internalRow);
-      result[virtualColumn.propertyUrl] = { "@id": valueUrl };
-      lookups[valueUrl] = virtualColumn.propertyUrl;
+      if (valueUrl !== "") {
+        result[virtualColumn.propertyUrl] = { "@id": valueUrl };
+      }
     }
   });
 
@@ -196,10 +255,8 @@ function convertRowToJSONLD(row) {
     if (virtualColumn.aboutUrl) {
       let aboutUrl = processValueUrl(virtualColumn.aboutUrl,internalRow);
       let valueUrl = processValueUrl(virtualColumn.valueUrl,internalRow);
-      if (lookups[aboutUrl]) {
-        result[lookups[aboutUrl]][virtualColumn.propertyUrl] = valueUrl;
-      } else {
-        result[virtualColumn.propertyUrl] = valueUrl;
+      if (valueUrl !== "") {
+        updateNodeById(result, aboutUrl, virtualColumn.propertyUrl, valueUrl);
       }
     }
   });
